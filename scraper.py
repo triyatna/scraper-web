@@ -8,6 +8,7 @@ import hashlib
 import time
 import sqlite3
 import random
+import posixpath
 from urllib.parse import urlparse, urljoin, urldefrag
 import requests
 from bs4 import BeautifulSoup
@@ -452,6 +453,7 @@ def main():
     parser.add_argument("--select-date", help="Custom CSS selector for blog date")
     parser.add_argument("--select-content", help="Custom CSS selector for blog content")
     parser.add_argument("--no-dedup", action="store_true", help="Disable page content deduplication")
+    parser.add_argument("--same-path", action="store_true", help="Restrict crawling to URLs under the path of the starting URL")
     args = parser.parse_args()
 
     target_url = args.url
@@ -459,6 +461,16 @@ def main():
         target_url = 'https://' + target_url
     parsed_target = urlparse(target_url)
     domain = parsed_target.netloc
+    
+    target_path = parsed_target.path
+    if not target_path:
+        target_path = '/'
+    if target_path.endswith('/'):
+        target_dir = target_path
+    else:
+        target_dir = posixpath.dirname(target_path)
+        if not target_dir.endswith('/'):
+            target_dir += '/'
     
     output_dir = args.output
     if not output_dir:
@@ -490,7 +502,8 @@ def main():
                 for s_url in sitemap_urls:
                     parsed_s = urlparse(s_url)
                     if parsed_s.netloc == domain:
-                        session.add_to_visit(s_url, 0)
+                        if not args.same_path or parsed_s.path.startswith(target_dir):
+                            session.add_to_visit(s_url, 0)
             else:
                 print("Sitemap not found or empty.")
 
@@ -673,12 +686,20 @@ def main():
                     clean_href, fragment = urldefrag(full_href)
                     parsed_href = urlparse(clean_href)
                     if parsed_href.netloc == domain:
-                        local_link_path = get_local_path(clean_href, target_url, output_dir, is_page=True)
-                        if local_link_path:
-                            rel_link_path = get_relative_path(local_html_path, local_link_path)
-                            link['href'] = f"{rel_link_path}#{fragment}" if fragment else rel_link_path
-                            if not session.is_visited(clean_href) and not session.is_in_to_visit(clean_href):
-                                session.add_to_visit(clean_href, depth + 1)
+                        in_scope = True
+                        if args.same_path:
+                            href_path = parsed_href.path
+                            if not href_path.startswith(target_dir):
+                                in_scope = False
+                        if in_scope:
+                            local_link_path = get_local_path(clean_href, target_url, output_dir, is_page=True)
+                            if local_link_path:
+                                rel_link_path = get_relative_path(local_html_path, local_link_path)
+                                link['href'] = f"{rel_link_path}#{fragment}" if fragment else rel_link_path
+                                if not session.is_visited(clean_href) and not session.is_in_to_visit(clean_href):
+                                    session.add_to_visit(clean_href, depth + 1)
+                        else:
+                            link['href'] = full_href
 
                 with open(local_html_path, 'w', encoding='utf-8') as f:
                     f.write(str(soup))
