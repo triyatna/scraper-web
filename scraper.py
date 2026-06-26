@@ -453,7 +453,7 @@ def main():
     parser.add_argument("--select-date", help="Custom CSS selector for blog date")
     parser.add_argument("--select-content", help="Custom CSS selector for blog content")
     parser.add_argument("--no-dedup", action="store_true", help="Disable page content deduplication")
-    parser.add_argument("--same-path", action="store_true", help="Restrict crawling to URLs under the path of the starting URL")
+    parser.add_argument("--no-same-path", action="store_false", dest="same_path", default=True, help="Allow crawling URLs outside the directory path of the starting URL")
     args = parser.parse_args()
 
     target_url = args.url
