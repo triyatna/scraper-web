@@ -437,7 +437,7 @@ def main():
     parser.add_argument("url", help="Target URL to scrape")
     parser.add_argument("-o", "--output", help="Explicit output directory (overrides project/ folder mapping)")
     parser.add_argument("--name", help="Name of the folder inside project/ to save results")
-    parser.add_argument("-d", "--depth", type=int, default=3, help="Maximum crawl depth")
+    parser.add_argument("-d", "--depth", type=int, default=-1, help="Maximum crawl depth (use -1 for unlimited)")
     parser.add_argument("-w", "--delay", type=float, default=0.5, help="Base delay between requests in seconds")
     parser.add_argument("--blog", action="store_true", help="Extract and save blog contents")
     parser.add_argument("--js", action="store_true", help="Enable JavaScript rendering via Playwright")
@@ -521,7 +521,7 @@ def main():
             if not next_item:
                 break
             url, depth = next_item
-            if session.is_visited(url) or depth > args.depth:
+            if session.is_visited(url) or (args.depth >= 0 and depth > args.depth):
                 continue
             session.mark_visited(url)
             print(f"Scraping: {url} (Depth: {depth})")
