@@ -68,11 +68,11 @@ Overrides the default `project/` directory mapping to output files to a complete
 
 ### 4. Maximum Crawl Depth (`-d` or `--depth`)
 
-Determines how deep the crawler follows internal links recursively. Depth `0` crawls only the seed page.
+Determines how deep the crawler follows internal links recursively. Defaults to `-1` (unlimited depth). Depth `0` crawls only the seed page.
 
 - **Example**:
   ```bash
-  python scraper.py https://example.com --depth 1 --name depth_one_crawl
+  python scraper.py https://example.com --depth 3 --name depth_three_crawl
   ```
 
 ### 5. Crawling Delay (`-w` or `--delay`)
@@ -176,6 +176,15 @@ Disables skipping duplicate pages, forcing the crawler to download pages even if
 - **Example**:
   ```bash
   python scraper.py https://example.com --no-dedup --name crawl_duplicates
+  ```
+
+### 16. Disable Same-Path Restriction (`--no-same-path`)
+
+By default, the crawler restricts perayapan to URLs that start with the directory path of the seed URL. Pass `--no-same-path` to allow crawling URLs outside the directory path of the starting URL (crawling the entire domain).
+
+- **Example**:
+  ```bash
+  python scraper.py https://example.com/html/trivia/index.html --no-same-path --name full_domain_crawl
   ```
 
 ---
