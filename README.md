@@ -1,4 +1,4 @@
-# Smart Web Scraper (Advanced Version)
+# Web Scraper
 
 This is a complete, production-grade CLI web scraper written in Python. It recursively crawls domain-internal pages, downloads all assets (HTML, CSS, JS, images, responsive image srcsets, fonts), translates absolute paths to relative ones for perfect offline usability, and supports advanced modern crawler features.
 
@@ -29,7 +29,7 @@ All scrape results are saved in the `project/` directory inside the working dire
    ```
 2. If you want to use the JavaScript rendering (`--js`) feature, install Playwright browsers:
    ```bash
-   playwright install chromium
+   python -m playwright install chromium
    ```
 
 ---
@@ -39,14 +39,18 @@ All scrape results are saved in the `project/` directory inside the working dire
 Below is a detailed guide and example for every CLI flag and option available in the scraper.
 
 ### 1. Target URL (Required Positional Argument)
+
 The seed URL where the crawl starts. It automatically prepends `https://` if no scheme is provided.
+
 - **Example**:
   ```bash
   python scraper.py https://books.toscrape.com
   ```
 
 ### 2. Output Subdirectory Name (`--name`)
+
 Specifies the folder name under the `project/` directory to store the outputs.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --name my_scraped_site
@@ -54,77 +58,99 @@ Specifies the folder name under the `project/` directory to store the outputs.
   ```
 
 ### 3. Explicit Output Path (`-o` or `--output`)
+
 Overrides the default `project/` directory mapping to output files to a completely custom, arbitrary path.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com -o C:\CustomScrapedDirectory
   ```
 
 ### 4. Maximum Crawl Depth (`-d` or `--depth`)
+
 Determines how deep the crawler follows internal links recursively. Depth `0` crawls only the seed page.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --depth 1 --name depth_one_crawl
   ```
 
 ### 5. Crawling Delay (`-w` or `--delay`)
+
 The baseline delay in seconds between HTTP requests to be polite to target servers.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --delay 2.5 --name slow_crawl
   ```
 
 ### 6. Blog Parsing Mode (`--blog`)
+
 Enables the parsing and extraction of blog metadata (Title, Author, Date, Content) into structured files.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com/blog --blog --name blog_extractor
   ```
 
 ### 7. JavaScript Rendering (`--js`)
+
 Launches Playwright headless browser to render JavaScript on pages before scraping. Excellent for modern web apps.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --js --name dynamic_site
   ```
 
 ### 8. Gemini API Key (`--gemini-key`)
+
 Used in combination with `--blog` to use AI for extracting blog details from pages. You can also specify the `GEMINI_API_KEY` environment variable.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com/blog --blog --gemini-key YOUR_API_KEY --name ai_blog
   ```
 
 ### 9. Proxy Rotation (`--proxies`)
+
 Passes a path to a text file containing a list of proxies (one per line, e.g., `http://username:password@ip:port` or `ip:port`).
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --proxies proxies.txt --name proxy_crawl
   ```
 
 ### 10. Sitemap Parsing (`--sitemap`)
+
 Downloads and parses the target's `sitemap.xml` file first, immediately adding all mapped URLs to the queue.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --sitemap --name sitemap_crawl
   ```
 
 ### 11. Exclude Media Assets (`--exclude-media`)
+
 Filters out and skips downloading image, audio, video, and archive files to save space and bandwidth.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --exclude-media --name text_only_site
   ```
 
 ### 12. Maximum Asset Size Filter (`--max-size`)
+
 Sets a size threshold in MB. Assets larger than this limit will not be downloaded.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --max-size 1.5 --name small_assets_only
   ```
 
 ### 13. Export Format (`--format`)
+
 Determines the output format for extracted blog data. Options are `json`, `csv`, `markdown`, or `all`.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com/blog --blog --format all --name rich_exports
@@ -135,14 +161,18 @@ Determines the output format for extracted blog data. Options are `json`, `csv`,
   ```
 
 ### 14. Custom CSS Selectors (`--select-title`, `--select-author`, `--select-date`, `--select-content`)
+
 Manually specifies CSS selectors to target specific HTML elements for article metadata extraction.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com/blog --blog --select-title "h1.entry-title" --select-author "span.author-name" --select-content "div.post-body" --name custom_selectors
   ```
 
 ### 15. Disable Duplicate Detection (`--no-dedup`)
+
 Disables skipping duplicate pages, forcing the crawler to download pages even if they have identical text content to a previously visited page.
+
 - **Example**:
   ```bash
   python scraper.py https://example.com --no-dedup --name crawl_duplicates
@@ -153,6 +183,7 @@ Disables skipping duplicate pages, forcing the crawler to download pages even if
 ## Combining Flags (Full Production Example)
 
 To run a highly resilient crawl that:
+
 - Uses JavaScript rendering with proxies.
 - Speeds up parsing by loading from `sitemap.xml` first.
 - Excludes media assets larger than 2MB.
@@ -172,3 +203,7 @@ python scraper.py https://example.com/blog \
   --format all \
   --name production_run
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
