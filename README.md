@@ -6,7 +6,7 @@ All scrape results are saved in the `project/` directory inside the working dire
 
 ## Advanced Features Implemented
 
-1. **JavaScript Rendering by Default**: Uses Playwright (Chromium) by default to render highly dynamic Single Page Applications (SPAs) like React, Vue, Angular, etc. Can be bypassed/disabled using `--no-js`.
+1. **JavaScript Rendering (React/SPA support)**: Using Playwright (Chromium), it runs a headless browser to render highly dynamic Single Page Applications (SPAs) like React, Vue, Angular, etc. before parsing. Can be enabled via the `--js` flag.
 2. **Same-Path Restriction by Default**: Automatically restricts perayapan to the directory of the target URL to keep the crawl in-scope. Can be disabled with `--no-same-path`.
 3. **Crawl Resume Session**: Automatically stores current crawl state (`visited` and `to_visit` lists) in a SQLite database (`session.db`) inside the output folder. If interrupted, simply re-running the command with the same output directory will resume scraping from where it stopped.
 4. **Duplicate Detection**: Computes cryptographic content hashes of main page text and prevents saving/crawling duplicate pages (such as calendar archive paths, duplicate queries, etc.).
@@ -29,7 +29,7 @@ All scrape results are saved in the `project/` directory inside the working dire
    ```bash
    pip install -r requirements.txt
    ```
-2. Install Playwright browsers (required for the default JavaScript rendering engine used for React, Vue, SPAs):
+2. Install Playwright browsers (required if you want to use the optional JavaScript rendering engine `--js` for React, Vue, SPAs):
    ```bash
    python -m playwright install chromium
    ```
@@ -95,22 +95,22 @@ Enables the parsing and extraction of blog metadata (Title, Author, Date, Conten
   python scraper.py https://example.com/blog --blog --name blog_extractor
   ```
 
-### 7. Disable JavaScript Rendering (`--no-js`)
+### 7. JavaScript Rendering (`--js`)
 
-JavaScript rendering (Playwright Chromium) is enabled by default to scrape modern client-side apps like React, Vue, Angular, etc. If you want to crawl static HTML sites faster without JS rendering, you can pass the `--no-js` flag to fall back to static Python requests.
+By default, the crawler uses static HTML requests (which is extremely fast). If you are scraping modern dynamic client-side apps built with React, Vue, Angular, or SPAs, pass the `--js` flag to launch a headless Playwright Chromium browser to render JavaScript before parsing.
 
 - **Example**:
   ```bash
-  python scraper.py https://example.com --no-js --name static_site
+  python scraper.py https://example.com --js --name dynamic_site
   ```
 
 ### 7b. Adjust JS Wait Time (`--js-wait`)
 
-Allows adjusting the wait time (hydration timeout) in milliseconds after the page load before extracting contents. Defaults to `2000` (2 seconds).
+Used in combination with `--js`. Allows adjusting the wait time (hydration timeout) in milliseconds after the page load before extracting contents. Defaults to `2000` (2 seconds).
 
 - **Example**:
   ```bash
-  python scraper.py https://example.com --js-wait 5000 --name slow_hydration_site
+  python scraper.py https://example.com --js --js-wait 5000 --name slow_hydration_site
   ```
 
 ### 8. Gemini API Key (`--gemini-key`)
@@ -212,6 +212,7 @@ To run a highly resilient crawl that:
 
 ```bash
 python scraper.py https://example.com/blog \
+  --js \
   --js-wait 3000 \
   --sitemap \
   --proxies proxies.txt \
