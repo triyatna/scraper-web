@@ -27,7 +27,7 @@ All scrape results are saved in the `project/` directory inside the working dire
    ```bash
    pip install -r requirements.txt
    ```
-2. If you want to use the JavaScript rendering (`--js`) feature, install Playwright browsers:
+2. Install Playwright browsers (required for the default JavaScript rendering engine used for React, Vue, SPAs):
    ```bash
    python -m playwright install chromium
    ```
@@ -93,13 +93,22 @@ Enables the parsing and extraction of blog metadata (Title, Author, Date, Conten
   python scraper.py https://example.com/blog --blog --name blog_extractor
   ```
 
-### 7. JavaScript Rendering (`--js`)
+### 7. Disable JavaScript Rendering (`--no-js`)
 
-Launches Playwright headless browser to render JavaScript on pages before scraping. Excellent for modern web apps.
+JavaScript rendering (Playwright Chromium) is enabled by default to scrape modern client-side apps like React, Vue, Angular, etc. If you want to crawl static HTML sites faster without JS rendering, you can pass the `--no-js` flag to fall back to static Python requests.
 
 - **Example**:
   ```bash
-  python scraper.py https://example.com --js --name dynamic_site
+  python scraper.py https://example.com --no-js --name static_site
+  ```
+
+### 7b. Adjust JS Wait Time (`--js-wait`)
+
+Allows adjusting the wait time (hydration timeout) in milliseconds after the page load before extracting contents. Defaults to `2000` (2 seconds).
+
+- **Example**:
+  ```bash
+  python scraper.py https://example.com --js-wait 5000 --name slow_hydration_site
   ```
 
 ### 8. Gemini API Key (`--gemini-key`)
@@ -201,7 +210,7 @@ To run a highly resilient crawl that:
 
 ```bash
 python scraper.py https://example.com/blog \
-  --js \
+  --js-wait 3000 \
   --sitemap \
   --proxies proxies.txt \
   --exclude-media \
