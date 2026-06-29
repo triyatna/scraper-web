@@ -441,7 +441,7 @@ def main():
     parser.add_argument("-d", "--depth", type=int, default=-1, help="Maximum crawl depth (use -1 for unlimited)")
     parser.add_argument("-w", "--delay", type=float, default=0.5, help="Base delay between requests in seconds")
     parser.add_argument("--blog", action="store_true", help="Extract and save blog contents")
-    parser.add_argument("--no-js", action="store_false", dest="js", default=True, help="Disable JavaScript rendering via Playwright")
+    parser.add_argument("--js", action="store_true", help="Enable JavaScript rendering via Playwright")
     parser.add_argument("--js-wait", type=int, default=2000, help="Time to wait in milliseconds after page load for JavaScript rendering")
     parser.add_argument("--gemini-key", help="Gemini API Key for AI blog extraction")
     parser.add_argument("--proxies", help="Path to proxy list file")
