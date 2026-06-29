@@ -6,18 +6,20 @@ All scrape results are saved in the `project/` directory inside the working dire
 
 ## Advanced Features Implemented
 
-1. **JavaScript Rendering**: Using Playwright (Chromium), it runs a headless browser to render highly dynamic Single Page Applications (SPAs) before parsing the content.
-2. **Crawl Resume Session**: Automatically stores current crawl state (`visited` and `to_visit` lists) in a SQLite database (`session.db`) inside the output folder. If interrupted, simply re-running the command with the same output directory will resume scraping from where it stopped.
-3. **Duplicate Detection**: Computes cryptographic content hashes of main page text and prevents saving/crawling duplicate pages (such as calendar archive paths, duplicate queries, etc.).
-4. **Auto-Throttle**: Automatically increases or decreases delay between requests dynamically based on the target server's response time to prevent getting blocked.
-5. **User-Agent Rotation**: Automatically selects from a pool of modern browser user agents for each request.
-6. **AI Blog Extraction**: Integrates optional Gemini API (`gemini-2.5-flash`) to structurally extract blog title, author, date, and text summary directly from cleaned HTML context.
-7. **Proxy Rotation**: Rotates through a text file pool of HTTP/HTTPS/Socks5 proxies for both requests and Playwright.
-8. **Sitemap Crawling**: Can read a site's `sitemap.xml` directly to populate the crawl queue immediately.
-9. **Media Download Filters**: Optional filters to exclude media types (images/audio/video) or skip files exceeding a custom size limit in MB (disabled by default).
-10. **Custom CSS Selectors**: Allows inputting custom CSS selectors for blog Title, Author, Date, and Content via CLI flags.
-11. **Multiple Export Formats**: Save extracted blog data to JSON, CSV, individual Markdown files, or all three.
-12. **Custom Folder Name via CLI**: Allows passing `--name` to determine the specific subdirectory inside `project/` where scraped files are saved.
+1. **JavaScript Rendering by Default**: Uses Playwright (Chromium) by default to render highly dynamic Single Page Applications (SPAs) like React, Vue, Angular, etc. Can be bypassed/disabled using `--no-js`.
+2. **Same-Path Restriction by Default**: Automatically restricts perayapan to the directory of the target URL to keep the crawl in-scope. Can be disabled with `--no-same-path`.
+3. **Crawl Resume Session**: Automatically stores current crawl state (`visited` and `to_visit` lists) in a SQLite database (`session.db`) inside the output folder. If interrupted, simply re-running the command with the same output directory will resume scraping from where it stopped.
+4. **Duplicate Detection**: Computes cryptographic content hashes of main page text and prevents saving/crawling duplicate pages (such as calendar archive paths, duplicate queries, etc.).
+5. **Auto-Throttle**: Automatically increases or decreases delay between requests dynamically based on the target server's response time to prevent getting blocked.
+6. **User-Agent Rotation**: Automatically selects from a pool of modern browser user agents for each request.
+7. **AI Blog Extraction**: Integrates optional Gemini API (`gemini-2.5-flash`) to structurally extract blog title, author, date, and text summary directly from cleaned HTML context.
+8. **Proxy Rotation**: Rotates through a text file pool of HTTP/HTTPS/Socks5 proxies for both requests and Playwright.
+9. **Sitemap Crawling**: Can read a site's `sitemap.xml` directly to populate the crawl queue immediately.
+10. **Media Download Filters**: Optional filters to exclude media types (images/audio/video) or skip files exceeding a custom size limit in MB (disabled by default).
+11. **Custom CSS Selectors**: Allows inputting custom CSS selectors for blog Title, Author, Date, and Content via CLI flags.
+12. **Multiple Export Formats**: Save extracted blog data to JSON, CSV, individual Markdown files, or all three.
+13. **Custom Folder Name via CLI**: Allows passing `--name` to determine the specific subdirectory inside `project/` where scraped files are saved.
+14. **Unlimited Crawling**: By default, maximum crawl depth is set to `-1` (unlimited), allowing crawling of entire websites.
 
 ---
 
